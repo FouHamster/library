@@ -12,7 +12,10 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+//Route::get('/', function () {
+//    return view('welcome');
+//});
+//Route::get('user/auth', [\App\Http\Controllers\UserController::class, 'auth']);
 
-Route::get('/', function () {
-    return view('welcome');
-});
+//Route::get('user/login', [\App\Http\Controllers\UserController::class, 'login']);
+

@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
@@ -22,7 +23,7 @@ return new class extends Migration {
         $admin->name = 'Admin';
         $admin->surname = 'Admin';
         $admin->login = 'Admin';
-        $admin->password = 'Admin';
+        $admin->password = Hash::make('Admin');
         $admin->role_id = $modelRoleAdmin->id;
         $admin->phone = 0;
         $admin->save();
@@ -31,7 +32,7 @@ return new class extends Migration {
         $user->name = 'User';
         $user->surname = 'User';
         $user->login = 'User';
-        $user->password = 'User';
+        $user->password = Hash::make('User');
         $user->role_id = $modelRoleUser->id;
         $user->phone = 0;
         $user->save();
