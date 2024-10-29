@@ -2,36 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\user\UserEditRequest;
+use App\Http\Requests\user\UserRegisterRequest;
+use App\Models\Collection;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class UserController extends Controller
+class UserController extends BaseController
 {
     public function login(Request $request)
     {
         $credentials = $request->only('login', 'password');
 
-        $token = \auth()->attempt($credentials);
+        $token = auth()->attempt($credentials);
         if (!$token) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return $this->response(['error' => 'Не правильный логин или пароль'], false, 401);
         }
 
-        return response()->json(compact('token'));
+        return $this->response(compact('token'));
     }
 
-    public function register(Request $request)
+    public function register(UserRegisterRequest $request)
     {
-        $request->validate([
-            'login' => 'required|string|max:255|unique:users',
-            'password' => 'required|string|min:2',
-            'name' => 'required|string|max:255',
-            'surname' => 'required|string|max:255',
-            'phone' => 'required|string|max:255',
-        ]);
-
         $userRole = Role::where(['title' => 'User'])->first();
 
         $user = User::create([
@@ -45,18 +40,47 @@ class UserController extends Controller
 
         $token = JWTAuth::fromUser($user);
 
-        return response()->json(compact('user', 'token'), 201);
+        $collection = new Collection();
+        $collection->user_id = $user->id;
+        $collection->title = 'Избранное';
+        $collection->save();
+
+        return $this->response(compact('user', 'token'), code: 201);
     }
 
     public function logout()
     {
-        \auth()->logout();
+        auth()->logout();
 
-        return response()->json(['message' => 'Successfully logged out']);
+        return $this->response(['message' => 'Successfully logged out']);
     }
 
     public function me()
     {
-        return response()->json(\auth()->user());
+        if (!auth()->user()) {
+            return $this->response(['user not login'], false, 500);
+        }
+        return $this->response(auth()->user());
     }
+
+    public function edit(UserEditRequest $request)
+    {
+        $data = $request->validated();
+
+        $user = $request->user();
+
+        if ($data) {
+            if (isset($data['password'])) {
+                $data['password'] = Hash::make($data['password']);
+            }
+            $user->update($data);
+        } else {
+            return $this->response(['message' => 'Empty data for save!'], false, 500);
+        }
+
+        return $this->response(['message' => 'User saved!']);
+    }
+
+
+
 }
