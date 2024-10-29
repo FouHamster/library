@@ -32,6 +32,6 @@ class BookController extends BaseController
             $models->where('books.language', '=', $request->get('language'));
         }
 
-        return $this->response($models->get());
+        return $this->response($models->paginate(10)->items());
     }
 }

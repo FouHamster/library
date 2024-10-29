@@ -11,7 +11,7 @@ class CollectionController extends BaseController
 {
     public function index(Request $request): JsonResponse
     {
-        $models = Collection::where('user_id', '=', $request->user()->id)->get();
+        $models = Collection::where('user_id', '=', $request->user()->id)->paginate(10)->items();
 
         return $this->response($models);
     }
