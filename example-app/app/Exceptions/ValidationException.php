@@ -6,7 +6,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class ValidationException extends HttpResponseException
 {
-    public function __construct($code = 422, $message = 'Validation error', $errors = [])
+    public function __construct($code = 422, $message = 'Validation error', $errors = []) //конструктор валидации
     {
         $data = [
             'success' => false,

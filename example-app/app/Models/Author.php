@@ -9,4 +9,9 @@ class Author extends Model
 {
     use HasFactory;
     public $timestamps = false;
+
+    protected $fillable = [
+        'name',
+        'surname'
+    ];
 }

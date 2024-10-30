@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\user\AdminUserEditRequest;
 use App\Http\Requests\user\UserEditRequest;
 use App\Http\Requests\user\UserRegisterRequest;
 use App\Models\Collection;
@@ -57,9 +58,6 @@ class UserController extends BaseController
 
     public function me()
     {
-        if (!auth()->user()) {
-            return $this->response(['user not login'], false, 500);
-        }
         return $this->response(auth()->user());
     }
 
@@ -81,6 +79,37 @@ class UserController extends BaseController
         return $this->response(['message' => 'User saved!']);
     }
 
+    public function users()
+    {
+        $methods = User::with(['role'])->get();
 
+        return $this->response($methods);
+    }
+
+    public function update(AdminUserEditRequest $request)
+    {
+        $data = $request->validated();
+
+        $user = User::where('id', '=', $data['user_id'])->first();
+        if (!$user) {
+            return $this->response(['message' => 'Пользователь не найден!'], false, 404);
+        }
+
+        $role = Role::where('id', '=', $data['role_id'])->first();
+        if (!$role) {
+            return $this->response(['message' => 'Роль не найдена!'], false, 404);
+        }
+
+        if ($user->role_id == $data['role_id']) {
+            return $this->response(['message' => 'Эта роль уже стоит у пользователя'], false, 500);
+        }
+
+        $user->role_id = $data['role_id'];
+        if (!$user->save()) {
+            return $this->response(['message' => 'Не получилось изменить роль у пользователя'], false, 500);
+        }
+
+        return $this->response(['message' => 'Роль у пользователя успешно изменена!']);
+    }
 
 }
