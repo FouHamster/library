@@ -36,6 +36,8 @@ Route::group([
     'prefix' => 'book'
 ], function ($router) {
     Route::get('/', [BookController::class, 'index']);
+    Route::get('read', [BookController::class, 'read'])->middleware(AuthChecker::class);
+    Route::get('download', [BookController::class, 'download'])->middleware(AuthChecker::class);
 });
 
 Route::group([
@@ -53,7 +55,6 @@ Route::group([
 
     Route::get('my', [RentController::class, 'my'])->middleware(AuthChecker::class);
     Route::post('add', [RentController::class, 'add'])->middleware(AuthChecker::class);
-//    Route::post('create', [CollectionController::class, 'create'])->middleware(AuthChecker::class);
 });
 
 Route::group([
@@ -68,8 +69,6 @@ Route::group([
     Route::get('geners', [GenerController::class, 'index'])->middleware(AdminChecker::class);
     Route::post('geners/add', [GenerController::class, 'add'])->middleware(AdminChecker::class);
     Route::post('geners/edit', [GenerController::class, 'edit'])->middleware(AdminChecker::class);
-
-//    Route::get('my', [RentController::class, 'my'])->middleware(AuthChecker::class);
-//    Route::post('add', [RentController::class, 'add'])->middleware(AuthChecker::class);
-//    Route::post('create', [CollectionController::class, 'create'])->middleware(AuthChecker::class);
+    Route::post('book/add', [BookController::class, 'add'])->middleware(AdminChecker::class);
+    Route::post('book/edit', [BookController::class, 'edit'])->middleware(AdminChecker::class);
 });

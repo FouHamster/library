@@ -38,7 +38,7 @@ class GenerController extends BaseController
             return $this->response(['message' => 'Жанр не найден!'], false, 404);
         }
 
-        unset($data['gener_id']);
+        unset($data['gener_id']); //как рабоатет, что это?
         if ($data) {
             $gener->update($data);
             return $this->response(['message' => 'Жанр успешно обновлен!']);

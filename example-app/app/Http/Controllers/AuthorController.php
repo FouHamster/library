@@ -8,14 +8,14 @@ use App\Models\Author;
 
 class AuthorController extends BaseController
 {
-    public function index()
+    public function index() //вывод всех авторов
     {
         $models = Author::all();
 
         return $this->response($models);
     }
 
-    public function add(AuthorAddRequest $request)
+    public function add(AuthorAddRequest $request) //Добавление автора
     {
         $data = $request->validated();
 
